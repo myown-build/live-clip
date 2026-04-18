@@ -9,7 +9,13 @@ defmodule LiveClip.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      default_release: :live_clip,
+      releases: [
+        live_clip: [
+          steps: [:assemble, :tar]
+        ]
+      ]
     ]
   end
 
