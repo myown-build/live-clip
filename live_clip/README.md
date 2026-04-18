@@ -1,18 +1,20 @@
 # LiveClip
 
-To start your Phoenix server:
+## Running
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+Get release archive from GitHub 
+- <https://github.com/myown-build/live-clip/releases/tag/v0.0.1)>
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+- `wget <url>`
+- `tar -xvf <file>`
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+- set environment variables
+- `PHX_SERVER=true bin/live_clip start`
 
-## Learn more
+### Environment variables
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+- `export SECRET_KEY_BASE=<secret key>`
+- `export SUPABASE_URL=<url>`
+- `export SUPABASE_KEY=<publishable key>`
+
+

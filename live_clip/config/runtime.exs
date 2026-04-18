@@ -7,15 +7,6 @@ import Config
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
 
-# ## Using releases
-#
-# If you use `mix release`, you need to explicitly enable the server
-# by passing the PHX_SERVER=true when you start it:
-#
-#     PHX_SERVER=true bin/live_clip start
-#
-# Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
-# script that automatically sets the env var above.
 if System.get_env("PHX_SERVER") do
   config :live_clip, LiveClipWeb.Endpoint, server: true
 end
@@ -33,16 +24,25 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
+  host = System.get_env("PHX_HOST") || "myown.build"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :live_clip, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
-  config :live_clip, :supabase_url, System.get_env("SUPABASE_URL")
-  config :live_clip, :supabase_key, System.get_env("SUPABASE_KEY")
+  config :live_clip, :supabase_url, System.fetch_env!("SUPABASE_URL")
+  config :live_clip, :supabase_key, System.fetch_env!("SUPABASE_KEY")
 
   config :live_clip, LiveClipWeb.Endpoint,
+    server: true
     url: [host: host, port: 443, scheme: "https"],
+    https: [
+      port: 443,
+      cipher_suite: :strong,
+      keyfile: "/etc/letsencrypt/live/myown.build/privkey.pem",
+      certfile: "/etc/letsencrypt/live/myown.build/fullchain.pem",
+      transport_options: [socket_opts: [:inet6]]
+    ],
+    # force_ssl: [hsts: true]
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
@@ -52,6 +52,7 @@ if config_env() == :prod do
       port: port
     ],
     secret_key_base: secret_key_base
+    # force_ssl: [hsts: true]
 
   # ## SSL Support
   #
