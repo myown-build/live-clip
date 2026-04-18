@@ -1,5 +1,7 @@
 # LiveClip
 
+
+
 ## Running
 
 Get release archive from GitHub 
@@ -9,7 +11,7 @@ Get release archive from GitHub
 - `tar -xvf <file>`
 
 - set environment variables
-- `PHX_SERVER=true bin/live_clip start`
+- `bin/live_clip start`
 
 ### Environment variables
 
@@ -17,4 +19,9 @@ Get release archive from GitHub
 - `export SUPABASE_URL=<url>`
 - `export SUPABASE_KEY=<publishable key>`
 
+### Certbot
+- install and run certbot to create certificate files (fullchain.pem and privkey.pem)
+
+## Releasing
+- `MIX_ENV=prod mix release`
 

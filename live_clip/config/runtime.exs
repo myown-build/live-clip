@@ -33,14 +33,13 @@ if config_env() == :prod do
   config :live_clip, :supabase_key, System.fetch_env!("SUPABASE_KEY")
 
   config :live_clip, LiveClipWeb.Endpoint,
-    server: true
+    server: true,
     url: [host: host, port: 443, scheme: "https"],
     https: [
       port: 443,
       cipher_suite: :strong,
       keyfile: "/etc/letsencrypt/live/myown.build/privkey.pem",
-      certfile: "/etc/letsencrypt/live/myown.build/fullchain.pem",
-      transport_options: [socket_opts: [:inet6]]
+      certfile: "/etc/letsencrypt/live/myown.build/fullchain.pem"
     ],
     # force_ssl: [hsts: true]
     http: [
