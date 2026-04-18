@@ -72,7 +72,7 @@ defmodule LiveClipWeb.StreamLive do
     dbg(params)
     # %{"query" => query} = params
 
-    socket = assign(socket, :client, @supabase_client)
+    socket = assign(socket, :client, get_supabase_client())
 
     # socket = assign(socket, search_form: to_form(%{"query" => query}))
     {:noreply, socket}
