@@ -19,6 +19,8 @@ defmodule LiveClipWeb.Router do
 
     get "/", PageController, :home
     live "/create", StreamLive, :index
+
+    live "/view/:id", ViewerLive, :show 
   end
 
   # Other scopes may use custom stacks.
@@ -37,6 +39,9 @@ defmodule LiveClipWeb.Router do
 
     scope "/dev" do
       pipe_through :browser
+
+      live "/watch", LiveClipWeb.WatcherLive, :index
+      live "/watch/live", LiveClipWeb.WatcherLive, :live
 
       live_dashboard "/dashboard", metrics: LiveClipWeb.Telemetry
     end

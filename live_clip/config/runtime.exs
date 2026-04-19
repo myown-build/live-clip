@@ -11,6 +11,9 @@ if System.get_env("PHX_SERVER") do
   config :live_clip, LiveClipWeb.Endpoint, server: true
 end
 
+config :live_clip, :supabase_url, System.fetch_env!("SUPABASE_URL")
+config :live_clip, :supabase_key, System.fetch_env!("SUPABASE_KEY")
+
 if config_env() == :prod do
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
@@ -29,8 +32,6 @@ if config_env() == :prod do
 
   config :live_clip, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
-  config :live_clip, :supabase_url, System.fetch_env!("SUPABASE_URL")
-  config :live_clip, :supabase_key, System.fetch_env!("SUPABASE_KEY")
 
   config :live_clip, LiveClipWeb.Endpoint,
     server: true,

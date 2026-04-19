@@ -66,6 +66,7 @@ defmodule LiveClip.Cache do
   end
 
   def myown_init(name) do
+    Logger.info("Cache init #{inspect(name)}")
     :ok
   end
 end

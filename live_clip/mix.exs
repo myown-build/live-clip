@@ -4,7 +4,7 @@ defmodule LiveClip.MixProject do
   def project do
     [
       app: :live_clip,
-      version: "0.2.0",
+      version: "0.2.1",
       elixir: "~> 1.17",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -37,7 +37,10 @@ defmodule LiveClip.MixProject do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [
+    [  
+      {:qr_code, "~> 3.2"},
+      {:ecto, "~> 3.13"},
+      {:slipstream, "~> 1.2"},
       {:phoenix, "~> 1.7.19"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},

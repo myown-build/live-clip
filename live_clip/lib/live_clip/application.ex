@@ -7,10 +7,12 @@ defmodule LiveClip.Application do
 
   @impl true
   def start(_type, _args) do
+
     children = [
       LiveClipWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:live_clip, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: LiveClip.PubSub},
+      {DynamicSupervisor, name: LiveClip.DynamicSupervisor, strategy: :one_for_one},
       LiveClip.Cache,
       LiveClipWeb.Endpoint
     ]

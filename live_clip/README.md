@@ -11,7 +11,8 @@ Get release archive from GitHub
 - `tar -xvf <file>`
 
 - set environment variables
-- `bin/live_clip start`
+- `bin/live_clip daemon` <https://kaiwern.com/posts/2020/07/20/deploying-elixir/phoenix-release-to-production/>
+
 
 ### Environment variables
 

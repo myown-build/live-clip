@@ -15,6 +15,10 @@ defmodule LiveClipWeb.Endpoint do
     websocket: [connect_info: [session: @session_options]],
     longpoll: [connect_info: [session: @session_options]]
 
+  socket "/watcher", LiveClipWeb.WatcherSocket,
+    [connect_info: [:peer_data]]
+  # auth_token: "" # header Sec-WebSocket-Protocol
+
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phx.digest
