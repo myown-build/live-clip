@@ -22,13 +22,19 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
-import hooks from "./hooks"
+// import hooks from "./hooks"
+
+// import {hooks as colocatedHooks} from "phoenix-colocated/live_clip"
+import {hooks} from "phoenix-colocated/live_clip"
+console.log(hooks);
+
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
-  longPollFallbackMs: 2500,
+  longPollFallbackMs: location.host.startsWith("localhost") ? undefined : 2500,
   params: {_csrf_token: csrfToken},
   hooks
+  // hooks: {...hooks, ...colocatedHooks}
 })
 
 // Show progress bar on live navigation and form submits

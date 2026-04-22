@@ -17,6 +17,9 @@ defmodule LiveClipWeb.Router do
   scope "/", LiveClipWeb do
     pipe_through :browser
 
+    live "/signin", AuthLive
+    # live "/sign-in", AuthLive, :sign_in
+
     get "/", PageController, :home
     live "/create", StreamLive, :index
 

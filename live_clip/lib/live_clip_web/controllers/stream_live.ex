@@ -54,6 +54,9 @@ defmodule LiveClipWeb.StreamLive do
           >Share with QR</button>
           
           <div :if={@clip_links[id] !== nil} class="p-4 bg-neutral-200 flex flex-col items-center">
+            <a
+              class="text-neutral-900" 
+              href={@clip_links[id].uri} target="#">{@clip_links[id].uri}</a>
             <img src={@clip_links[id].qr_img_src} alt="QR code" />
           </div>
         </div>

@@ -29,56 +29,17 @@ defmodule LiveClipWeb.WatcherLive do
     ~H"""
     <div class="h-full flex flex-col gap-3 bg-neutral-900 text-white/70 p-4">
       
-      <button 
-        :if={@client === nil}
-        phx-click={JS.push("setup:start")}
-        class="w-1/3 p-3 border border-gray-500 bg-neutral-900 hover:bg-neutral-700"
-      >Connect using Supabase</button>
+      <div class="w-full flex flex-col items-center bg-neutral-700 p-4 border rounded border-gray-500">
+        <.supabase id="supabase-watch" auth_token={@auth_token}>
 
-      <div :if={@client !== nil}>
-        <span>Connection to: {@client.url}</span>
-        <div 
-          id="live-clip-watcher" 
-          phx-hook="WatcherHook" 
-          phx-change="ignore"
-          data-supabase-url={@client.url}
-          data-supabase-key={@client.key}
-          data-auth-token={@auth_token}
-        >
+        </.supabase>
+        <div :if={@user !== nil} class="flex flex-row items-center gap-4">
+          <span>ID: {@user["id"]}</span>
+          <span>Email: {@user["email"]}</span>
         </div>
       </div>
 
-      <.form
-        :if={@watcher_form !== nil}
-        for={@watcher_form}
-        id="watcher-form"
-        phx-change="watcher:change"
-        phx-submit="watcher:connect"
-        class="w-1/3 p-4 text-white text-xl font-code align-middle bg-neutral-600"
-      >
-        <.input field={@watcher_form[:token]} label="Access token" class="rounded-full border-2 border-neutral-800 " autocomplete="off" />
-        <%!-- <.button>Connect</.button> --%>
-        <button 
-          :if={not @is_connected?}
-          class="mt-2 border p-2 rounded border-gray-500 bg-neutral-900 hover:bg-neutral-700"
-        >Connect</button>
-      </.form>
-
       <div :if={@is_connected?}>
-<%!--         <.form
-          :if={@clip_form !== nil}
-          for={@clip_form}
-          id="clip-form"
-          phx-change="clipper:change"
-          phx-submit="clipper:save"
-          class="w-1/3 text-white text-xl font-code align-middle"
-        >
-          <input type="hidden" name={@clip_form[:id].name} value={@clip_form[:id].value} />
-          <button 
-            class="border border-gray-500 bg-neutral-900 hover:bg-neutral-700"
-          >New Clip</button>
-        </.form> --%>
-
         <label id={"drop-zone"}>
           Drop images here, or click to upload.
           <input type="file" id={"file-input"} accept="*" />
@@ -105,9 +66,7 @@ defmodule LiveClipWeb.WatcherLive do
   @impl true
   def mount(params, session, socket) do
     Logger.info("[demo] sesion: #{inspect(session)}, params: #{inspect(params)}")
-    dbg(params["token"])
-
-    # dbg(socket.assigns[:live_action])
+    # dbg(params["token"])
 
     socket = assign(socket, 
       client: nil,
@@ -115,8 +74,10 @@ defmodule LiveClipWeb.WatcherLive do
       watcher_form: nil,
       clip_form: nil,
       clips: %{},
-      auth_token: params["token"]
+      auth_token: params["token"],
+      user: nil
     )
+
     if connected?(socket) do
       socket = assign(socket, watcher_form: to_form(%{"token" => ""}))
 
@@ -142,11 +103,11 @@ defmodule LiveClipWeb.WatcherLive do
   end
 
   @impl true
-  def handle_event("setup:start", _params, socket) do
-    socket = assign(socket, 
-      client: get_supabase_client()
-    )
-    # {:noreply, socket}
+  def handle_event("auth:success", %{"user" => user} = _params, socket) do
+    dbg(user)
+    socket = put_private(socket, :supabase_auth, user)
+    socket = assign(socket, is_connected?: true, user: user)
+
     # Remove the token from the url by pushing a patch with replace.
     {:noreply, push_patch(socket, to: ~p"/dev/watch", replace: true)}
   end
@@ -206,7 +167,11 @@ defmodule LiveClipWeb.WatcherLive do
     case socket.private do
       %{watcher: watcher} ->
         # id = Ecto.UUID.generate()
-        id = DateTime.utc_now(:second) |> to_string()
+        id = 
+          :second
+          |> DateTime.utc_now() 
+          |> to_string()
+          |> String.replace(" ", "T")
 
         %{clips: clips} = socket.assigns
 

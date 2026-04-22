@@ -19,6 +19,33 @@ defmodule LiveClipWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
+  alias LiveClipWeb.Live
+
+  attr :id, :string, required: true
+  attr :auth_token, :any, default: nil
+
+  slot :auth_otp
+  slot :file_upload
+
+  def supabase(assigns) do
+    ~H"""
+      <.live_component id={@id} module={Live.SupabaseComponent} auth_token={@auth_token}>
+        <:auth_otp :if={@auth_otp !== nil} :let={form}>
+          {render_slot(@auth_otp, form)}
+        </:auth_otp>
+
+        <:status :let={status}>
+          <span :if={status === :authenticating}>Authenticating...</span>
+          <span :if={status === :email_sent}>Email sent if a sign-up with the email exists.</span>
+        </:status>
+
+        <:upload :if={@file_upload !== nil}>
+          {render_slot(@file_upload)}
+        </:upload>
+      </.live_component>
+    """
+  end
+
   @doc """
   Renders a modal.
 

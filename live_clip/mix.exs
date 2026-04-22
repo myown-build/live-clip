@@ -15,7 +15,8 @@ defmodule LiveClip.MixProject do
         live_clip: [
           steps: [:assemble, :tar]
         ]
-      ]
+      ],
+      compilers: [:phoenix_live_view] ++ Mix.compilers()
     ]
   end
 
@@ -41,10 +42,10 @@ defmodule LiveClip.MixProject do
       {:qr_code, "~> 3.2"},
       {:ecto, "~> 3.13"},
       {:slipstream, "~> 1.2"},
-      {:phoenix, "~> 1.7.19"},
+      {:phoenix, "~> 1.8"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 1.0.0"},
+      {:phoenix_live_view, "~> 1.1.0"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
