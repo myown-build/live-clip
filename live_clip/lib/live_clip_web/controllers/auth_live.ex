@@ -10,7 +10,7 @@ defmodule LiveClipWeb.AuthLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="h-full flex flex-col gap-3 bg-neutral-900 text-white/70 p-4">
+    <div class="h-full mt-8 p-4 flex flex-col gap-3 bg-neutral-900 text-white/70 p-4">
       <div class="w-full flex flex-col items-center bg-neutral-700 p-4 border rounded border-gray-500">
         <span class="text-lg select-none">Sign-in using Supabase Auth</span>
         <.supabase id="supabase-watch">

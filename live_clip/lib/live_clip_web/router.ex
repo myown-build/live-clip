@@ -17,10 +17,10 @@ defmodule LiveClipWeb.Router do
   scope "/", LiveClipWeb do
     pipe_through :browser
 
-    live "/signin", AuthLive
-    # live "/sign-in", AuthLive, :sign_in
+    # live "/signin", AuthLive
 
     get "/", PageController, :home
+
     live "/create", StreamLive, :index, container: {:div, class: "h-full"}
 
     live "/view/:id", ViewerLive, :show 
@@ -43,6 +43,7 @@ defmodule LiveClipWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
+      live "/signin", LiveClipWeb.AuthLive
       live "/watch", LiveClipWeb.WatcherLive, :index
       live "/watch/live", LiveClipWeb.WatcherLive, :live
 
