@@ -9,13 +9,6 @@ defmodule LiveClipWeb.StreamLive do
 
   alias LiveClipWeb.Endpoint
 
-  def get_supabase_client() do
-    %{
-      url: Application.get_env(:live_clip, :supabase_url),
-      key: Application.get_env(:live_clip, :supabase_key)
-    }
-  end
-
   def get_sharable_uri(id) do
     "#{Endpoint.url()}/view/#{id}"
   end
@@ -24,25 +17,6 @@ defmodule LiveClipWeb.StreamLive do
   def render(assigns) do
     ~H"""
     <div class="h-full flex flex-col bg-neutral-900 text-white/70 p-4">
-      <button 
-        :if={@client === nil}
-        phx-click={JS.push("setup:start")}
-        class="border border-gray-500 bg-neutral-900 hover:bg-neutral-700"
-      >Start setup</button>
-
-      <div :if={@client !== nil}>
-        <span>Connection to: {@client.url}</span>
-        <div 
-          id="live-clip-watcher" 
-          phx-hook="WatcherHook" 
-          phx-change="ignore"
-          data-supabase-url={@client.url}
-          data-supabase-key={@client.key}
-        >
-        </div>
-      </div>
-
-      
       <div :if={@event_ids !== []}>
         <div :for={id <- @event_ids} class="p-4 border rounded border-gray-500">
           <span>id: {inspect(id)}</span>
@@ -78,6 +52,8 @@ defmodule LiveClipWeb.StreamLive do
       clip_links: %{}
     )
     if connected?(socket) do
+      # get the cached event ids.
+
       Endpoint.subscribe("watch:1")
       {:ok, socket}
     else
@@ -108,7 +84,7 @@ defmodule LiveClipWeb.StreamLive do
   @impl true
   def handle_event("setup:start", params, socket) do
     dbg(params)
-    socket = assign(socket, :client, get_supabase_client())
+    socket = assign(socket, :client, LiveClipWeb.Live.SupabaseComponent.get_supabase_client())
     {:noreply, socket}
   end
 

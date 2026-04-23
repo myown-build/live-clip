@@ -10,9 +10,28 @@ defmodule LiveClip.Watcher do
 
   @topic "watch:1"
 
-  def start_or_fetch_watcher!(uri, token) do
+  def new_clip_id do
+    :second
+    |> DateTime.utc_now() 
+    |> to_string()
+    |> String.replace(" ", "T")
+  end
+
+  defp get_socket_url() do
+    case Mix.env() do
+      :dev ->
+        "ws://localhost:4001/watcher/websocket"
+      
+      _ ->
+        "wss://myown.build/watcher/websocket"
+    end
+  end
+
+  def start_or_fetch_watcher!(token) do
+    base = get_socket_url()
+
     uri = 
-      uri
+      base
       |> URI.parse()
       |> Map.put(:query, "token=#{token}")
       |> URI.to_string()
@@ -22,10 +41,10 @@ defmodule LiveClip.Watcher do
       {__MODULE__, %{config: [uri: uri]}}
     ) do
       {:error, {:already_started, pid}} ->
-        pid
+        {pid, base}
 
       {:ok, pid} ->
-        pid
+        {pid, base}
     end
   end
 
@@ -33,7 +52,7 @@ defmodule LiveClip.Watcher do
     GenServer.call(watcher, {:push, payload})
   end
 
-  def create_token(user_id) do
+  def create_token(_user_id) do
     Phoenix.Token.sign(LiveClipWeb.Endpoint, "user auth", 1)
   end
 
@@ -123,13 +142,6 @@ defmodule LiveClip.Watcher do
     {:stop, :normal, socket}
   end
 
-
-  def create_clip(channel) do
-    # SocketClient.Channel.push(channel, "new_msg", %{"body" => "Hello"})
-  end
-
-
-
   # @impl true
   # def handle_call({:create_video, %{id: _} = params}, _from, state) do
   #   Logger.debug("creating video #{inspect(params)}")
@@ -150,5 +162,4 @@ defmodule LiveClip.Watcher do
   #   state = Map.put(state, client_ref, pipeline)
   #   {:reply, pipeline, state}
   # end
-
 end

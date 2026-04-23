@@ -5,33 +5,22 @@ defmodule LiveClipWeb.ViewerLive do
 
   require Logger
 
-  alias LiveClip.Cache
-
-  alias LiveClipWeb.Endpoint
-
-  def get_supabase_client() do
-    %{
-      url: Application.get_env(:live_clip, :supabase_url),
-      key: Application.get_env(:live_clip, :supabase_key)
-    }
-  end
-
   @impl true
   def render(assigns) do
     ~H"""
     <div class="h-full w-full flex flex-col items-center bg-neutral-900 text-white/70 p-4">
-      <div :if={@client !== nil}>
-        <span>Connection to: {@client.url}</span>
-        <div 
-          id="live-clip-watcher" 
-          phx-hook="WatcherHook" 
-          phx-change="ignore"
-          data-supabase-url={@client.url}
-          data-supabase-key={@client.key}
-          data-video-id={@video_id}
-        >
+        <.supabase id="supabase-watch" video_id={@video_id}>
+          <:viewer>
+            <div :if={@video !== nil}>
+              <span :if={not @video.exists}>Video does not exist.</span>
+              <video :if={@video[:src]} src={@video.src} controls />
+            </div>
+          </:viewer>
+        </.supabase>
+        
+        <div :if={@video === nil}>
+          <span>Loading video...</span>
         </div>
-      </div>
     </div>
     """
   end
@@ -49,13 +38,13 @@ defmodule LiveClipWeb.ViewerLive do
       client: nil,
       event_ids: [],
       clip_links: %{},
-      video_id: "example10"
+      video_id: video_id,
+      video: nil
     )
     if connected?(socket) do
       # subscribe to pubsub events from oz backend.
       # Endpoint.subscribe("watch:1")
       # Endpoint.subscribe("video:#{video_id}")
-      socket = assign(socket, client: get_supabase_client())
 
       {:ok, socket, layout: false}
     else
@@ -82,11 +71,18 @@ defmodule LiveClipWeb.ViewerLive do
   end
 
   @impl true
-  # def handle_event("viewer:poll", params, socket) do
-  #   dbg(params)
-  #   socket = assign(socket, :client, get_supabase_client())
-  #   {:noreply, socket}
-  # end
+  def handle_event("video:src", params, socket) do
+    dbg(params)
+    case params do
+      %{"exists" => true, "publicUrl" => url} ->
+        socket = assign(socket, video: %{exists: true, src: url})
+        {:noreply, socket}
+
+      %{} ->
+        socket = assign(socket, video: %{exists: false})
+        {:noreply, socket}
+    end
+  end
 
   def handle_event(event, params, socket) do
     dbg([event, params])

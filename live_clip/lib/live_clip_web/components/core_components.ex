@@ -22,14 +22,23 @@ defmodule LiveClipWeb.CoreComponents do
   alias LiveClipWeb.Live
 
   attr :id, :string, required: true
-  attr :auth_token, :any, default: nil
+
+  attr :auth, :any, default: nil
+  attr :video_id, :any, default: nil
 
   slot :auth_otp
   slot :file_upload
+  slot :viewer
 
   def supabase(assigns) do
     ~H"""
-      <.live_component id={@id} module={Live.SupabaseComponent} auth_token={@auth_token}>
+      <.live_component 
+        id={@id} 
+        module={Live.SupabaseComponent} 
+        auth_token={@auth[:token]}
+        use_auth={@auth !== nil}
+        video_id={@video_id}
+      >
         <:auth_otp :if={@auth_otp !== nil} :let={form}>
           {render_slot(@auth_otp, form)}
         </:auth_otp>
@@ -42,6 +51,10 @@ defmodule LiveClipWeb.CoreComponents do
         <:upload :if={@file_upload !== nil}>
           {render_slot(@file_upload)}
         </:upload>
+
+        <:viewer :if={@viewer !== nil} :let={data}>
+          {render_slot(@viewer, data)}
+        </:viewer>
       </.live_component>
     """
   end

@@ -56,13 +56,6 @@ defmodule LiveClipWeb do
         layout: {LiveClipWeb.Layouts, :app}
 
       unquote(html_helpers())
-
-      def get_supabase_client() do
-        %{
-          url: Application.get_env(:live_clip, :supabase_url),
-          key: Application.get_env(:live_clip, :supabase_key)
-        }
-      end
     end
   end
 
