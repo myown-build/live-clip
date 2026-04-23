@@ -58,13 +58,16 @@ defmodule LiveClipWeb.WatcherLive do
         </.form>
       </div>
 
-      <div :if={@is_connected?}>
+      <div :if={@is_connected?} class="flex flex-col gap-3">
         <button
           phx-click={JS.push("clip:new")}
           class="p-2 border border-gray-500 bg-neutral-900 hover:bg-neutral-700"
         >New Clip</button>
       
-        <div :for={{id, clip} <- Enum.sort(@clips, :desc)}>
+        <div 
+          :for={{id, clip} <- Enum.sort(@clips, :desc)}
+          class={["p-2 border", if(@upload_params["videoId"] === id, do: "border-orange-400", else: "border-neutral-600")]}
+        >
           <span>ID: {inspect(id)}</span>
           <span>{inspect(clip)}</span>
           <button
