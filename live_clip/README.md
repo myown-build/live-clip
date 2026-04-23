@@ -1,6 +1,10 @@
 # LiveClip
 
+## Building
 
+- `MIX_ENV=prod mix compile` (needs to be run for phoenix_colocated hooks)
+- then `MIX_ENV=prod mix assets.deploy`
+- and `MIX_ENV=prod mix release`
 
 ## Running
 
