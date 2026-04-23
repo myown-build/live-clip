@@ -92,7 +92,7 @@ defmodule LiveClipWeb.StreamLive do
               class="flex flex-col items-center"
             >
               <a
-                class="text-neutral-900 text-neutral-200 underline" 
+                class="text-neutral-200 underline" 
                 href={@clip_links[id].uri} target="#">{@clip_links[id].uri}</a>
               <img src={@clip_links[id].qr_img_src} alt="QR code" />
             </div>
