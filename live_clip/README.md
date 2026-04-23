@@ -1,10 +1,14 @@
 # LiveClip
 
-## Building
+## Building a release
 
 - `MIX_ENV=prod mix compile` (needs to be run for phoenix_colocated hooks)
 - then `MIX_ENV=prod mix assets.deploy`
 - and `MIX_ENV=prod mix release`
+
+## Releasing to GitHub
+- if the file is bigger than 25MB the browser client will complain
+- can use github cli instead, `gh release upload v<version> _build/prod/live_clip-<version>.tar.gz` (after creating a release)
 
 ## Running
 
