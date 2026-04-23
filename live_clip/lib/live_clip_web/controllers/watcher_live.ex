@@ -142,7 +142,7 @@ defmodule LiveClipWeb.WatcherLive do
         %{clips: clips} = socket.assigns
         dbg(clips)
 
-        clips = put_in(clips[clip_id], :remote, id) 
+        clips = put_in(clips[clip_id][:remote], id) 
         socket = assign(socket, clips: clips)
         {:noreply, socket}
 
@@ -235,7 +235,7 @@ defmodule LiveClipWeb.WatcherLive do
 
         %{clips: clips} = socket.assigns
 
-        clips = Map.put(clips, id, params)
+        clips = Map.put(clips, id, %{})
         Watcher.send_message!(watcher, %{changes: %{id => "create"}})
 
         socket = assign(socket, 

@@ -21,7 +21,7 @@ defmodule LiveClipWeb.Router do
     # live "/sign-in", AuthLive, :sign_in
 
     get "/", PageController, :home
-    live "/create", StreamLive, :index
+    live "/create", StreamLive, :index, container: {:div, class: "h-full"}
 
     live "/view/:id", ViewerLive, :show 
   end
